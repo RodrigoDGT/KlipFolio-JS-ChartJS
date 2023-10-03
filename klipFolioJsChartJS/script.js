@@ -34,6 +34,12 @@ var page = {
 }
 var chartCustomers = null;
 
+function init() {
+    setTimeout(function() {
+        searchCustomers();
+    }, 1000);
+}
+
 function searchCustomers() {
     let params = [['page', page.currentPage]];
     serviceREST('GET', env.urlPerson, params, env.token)
@@ -352,3 +358,7 @@ function generateGradientColors(totalColors) {
   
     return colors;
   }
+
+window.onload = function() {
+    init();
+};
