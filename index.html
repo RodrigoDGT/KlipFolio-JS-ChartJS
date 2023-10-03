@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang='pt-br'>
+<head>
+  <meta charset='UTF-8'>
+  <script src="script.js"></script>
+</head>
+
+<div class="container-fluid">
+    <div class="row justify-content-between">
+      <div class="col-6 row justify-content-end align-content-start">
+        <div class="col-12 row justify-content-end p-0">
+          <div class="col-4">
+            <select class="form-select" id="idSelectCity" aria-label="Seleção de Cidade">
+              <option selected>Todas as Cidades</option>
+            </select>
+          </div>
+          <div class="col-2">
+            <button onclick="btnSearchCustomers()" class="btn btn-primary w-100">Pesquisar</button>
+          </div>
+        </div>
+        <table class="table table-hover mt-2">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Nome</th>
+              <th scope="col">Cidade</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Extra</th>
+            </tr>
+          </thead>
+          <tbody id="idTableBody">
+    
+          </tbody>
+        </table>
+        <nav aria-label="Page navigation example" class="col-4 p-0">
+          <ul class="pagination justify-content-end">
+            <li class="page-item" onclick="paginator(event)"><a class="page-link" href="#"><<</a></li>
+            <li class="page-item" onclick="paginator(event)"><a class="page-link" href="#">Anterior</a></li>
+            <li class="page-item active" onclick="paginator(event)" id="page1"><a class="page-link" href="#">1</a></li>
+            <li class="page-item" onclick="paginator(event)" id="page2"><a class="page-link" href="#">2</a></li>
+            <li class="page-item" onclick="paginator(event)" id="page3"><a class="page-link" href="#">3</a></li>
+            <li class="page-item" onclick="paginator(event)"><a class="page-link" href="#">Próximo</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="col-6">
+        <ul class="list-group">
+          <li class="list-group-item active text-center" aria-current="true">Informações</li>
+          <li class="list-group-item text-start" id="infoCustomer">
+            <p class="text-center">Selecione uma cidade</p>
+            
+          </li>
+        </ul>
+        <div class="card mt-4">
+          <canvas id="myChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
