@@ -1,0 +1,15 @@
+{
+  "name": "klipfoliojschartjs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "purgecss --css bootstrap.css --content index.html --output dist/"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "purgecss": "^5.0.0"
+  }
+}

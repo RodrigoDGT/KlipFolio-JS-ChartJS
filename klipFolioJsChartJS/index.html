@@ -2,60 +2,144 @@
 <html lang='pt-br'>
 <head>
   <meta charset='UTF-8'>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
   <script src="script.js"></script>
+  <link rel="stylesheet" href="bootstrap.css">
 </head>
 
+<body>
+
 <div class="container-fluid">
-    <div class="row justify-content-between">
-      <div class="col-6 row justify-content-end align-content-start">
-        <div class="col-12 row justify-content-end p-0">
-          <div class="col-4">
-            <select class="form-select" id="idSelectCity" aria-label="Seleção de Cidade">
-              <option selected>Todas as Cidades</option>
-            </select>
-          </div>
-          <div class="col-2">
-            <button onclick="btnSearchCustomers()" class="btn btn-primary w-100">Pesquisar</button>
-          </div>
+  <div class="alert" role="alert" id="alertDiv" style="display: none;">
+    <div id="alertText"></div>
+    <button type="button" class="btn-close" onclick="alertClose()"></button>
+  </div>
+  <div class="row justify-content-between">
+    <div class="col-6 row justify-content-end align-content-start p-0">
+      <div class="col-12 exclusivo row justify-content-end p-0">
+        <div class="col-4">
+          <select class="form-select" id="idSelectCity" aria-label="Seleção de Cidade">
+            <option selected>Todas as Cidades</option>
+          </select>
         </div>
-        <table class="table table-hover mt-2">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Nome</th>
-              <th scope="col">Cidade</th>
-              <th scope="col">Estado</th>
-              <th scope="col">Extra</th>
-            </tr>
-          </thead>
-          <tbody id="idTableBody">
-    
-          </tbody>
-        </table>
-        <nav aria-label="Page navigation example" class="col-4 p-0">
-          <ul class="pagination justify-content-end">
-            <li class="page-item" onclick="paginator(event)"><a class="page-link" href="#"><<</a></li>
-            <li class="page-item" onclick="paginator(event)"><a class="page-link" href="#">Anterior</a></li>
-            <li class="page-item active" onclick="paginator(event)" id="page1"><a class="page-link" href="#">1</a></li>
-            <li class="page-item" onclick="paginator(event)" id="page2"><a class="page-link" href="#">2</a></li>
-            <li class="page-item" onclick="paginator(event)" id="page3"><a class="page-link" href="#">3</a></li>
-            <li class="page-item" onclick="paginator(event)"><a class="page-link" href="#">Próximo</a></li>
-          </ul>
-        </nav>
+        <div class="col-2">
+          <button onclick="btnSearchCustomers()" class="btn btn-primary w-100">Pesquisar</button>
+        </div>
       </div>
-      <div class="col-6">
-        <ul class="list-group">
-          <li class="list-group-item active text-center" aria-current="true">Informações</li>
-          <li class="list-group-item text-start" id="infoCustomer">
-            <p class="text-center">Selecione uma cidade</p>
-            
-          </li>
-        </ul>
-        <div class="card mt-4">
-          <canvas id="myChart"></canvas>
+      <table class="table table-hover mt-2">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Cidade</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Extra</th>
+          </tr>
+        </thead>
+        <tbody id="idTableBody">
+          
+        </tbody>
+      </table>
+      <div class="row justify-content-center" id="idSpinnerTable" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
         </div>
+      </div>
+      <nav aria-label="Page navigation example" class="col-4 p-0">
+        <ul class="pagination justify-content-end">
+          <li class="page-item" onclick="paginator(event)"><a class="page-link" href="#"><<</a></li>
+          <li class="page-item" onclick="paginator(event)"><a class="page-link" href="#">Anterior</a></li>
+          <li class="page-item active" onclick="paginator(event)" id="page1"><a class="page-link" href="#">1</a></li>
+          <li class="page-item" onclick="paginator(event)" id="page2"><a class="page-link" href="#">2</a></li>
+          <li class="page-item" onclick="paginator(event)" id="page3"><a class="page-link" href="#">3</a></li>
+          <li class="page-item" onclick="paginator(event)"><a class="page-link" href="#">Próximo</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="col-6 p-0">
+      <ul class="list-group">
+        <li class="list-group-item active text-center" aria-current="true">Informações</li>
+        <li class="list-group-item text-start" id="infoCustomer">
+          <p class="text-center">Selecione uma cidade na lista</p>
+        </li>
+        <div class="row justify-content-center" id="idSpinnerListInfo" style="display: none;">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </ul>
+      <div class="card mt-4">
+        <canvas id="myChart"></canvas>
       </div>
     </div>
   </div>
 </div>
 
+<div aria-live="polite" aria-atomic="true" class="position-relative">
+  <div class="toast-container position-fixed top-0 end-0 p-3" id="toast-container">
+    
+  </div>
+  <audio id="alertSound">
+    <source src="https://audio-previews.elements.envatousercontent.com/files/29875625/preview.mp3?response-content-disposition=attachment%3B+filename%3D%227BZVS49-emergency-alert.mp3%22" type="audio/mpeg">
+  </audio>
+</div>
+
+<!-- <button type="button" class="btn btn-primary" onclick="showToast()">Show live toast</button>
+<div class="toast-container position-static">
+  <div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="liveToast" class="toast text-bg-primary" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide='false'>
+      <div class="toast-header">
+        <img src="" class="rounded me-2" alt="...">
+        <strong class="me-auto">Bootstrap</strong>
+        <small>11 mins ago</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        Hello, world! This is a toast message.
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<!-- <th scope="row">${page.currentPage == 1 ? index + 1 : (index + 1) + (page.pageSize * page.currentPage) - page.pageSize}</th>
+          <td>${customer.name}</td>
+          <td class="city">${customer.city}</td>
+          <td>${customer.state}</td>
+          <td>${customer.extra_info}</td>
+<div class="toast-header">
+  ${iconType[classType.toUpperCase()]}
+  <strong class="me-auto">${title}</strong>
+  <small class="text-body-secondary text-bg-primary text-bg-warning text-bg-danger" id="idToastShow${toastContainer.childElementCount}">Agora mesmo</small>
+  <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+</div>
+<div class="toast-body">
+  ${message}
+</div>
+<td colspan="5">Nenhum cliente disponível</td>
+<div class="row">
+  <div class="col-6">
+  <p><span class="fw-bold">Cidade: </span>${customerInfo.city}</p>
+  <p><span class="fw-bold">Estado: </span>${customerInfo.state}</p>
+  <p><span class="fw-bold">CNPJ: </span>${customerInfo.cnpj}</p>
+  <p><span class="fw-bold">E-mail: </span>${customerInfo.email}</p>
+  <p><span class="fw-bold">Telefone: </span>${customerInfo.phone1}</p>
+  </div>
+  <div class="col-6">
+  <p><span class="fw-bold">Preventiva: </span>${customerInfo.extra_info}</p>
+  <p><span class="fw-bold">Observação: </span>${customerInfo.obs}</p>
+  <p><span class="fw-bold">Tipo de Cliente: </span>${customerInfo.customer_type}</p>
+  <p><span class="fw-bold">Cadastro: </span>${formatDate(customerInfo.created_at)}</p>
+  <p><span class="fw-bold">Atualização: </span>${formatDate(customerInfo.updated_at)}</p>
+  </div>
+</div> -->
+
+<!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="margin-right: 10px; height: 23px;"><path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z"></path></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="margin-right: 10px; height: 23px;"><path d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7 .2 40.1S486.3 480 472 480H40c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8 .2-40.1l216-368C228.7 39.5 241.8 32 256 32zm0 128c-13.3 0-24 10.7-24 24V296c0 13.3 10.7 24 24 24s24-10.7 24-24V184c0-13.3-10.7-24-24-24zm32 224a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="margin-right: 10px; height: 23px;"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg> -->
+
+
+</body>
+
+<style>
+  
+</style>

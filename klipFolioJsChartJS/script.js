@@ -1,24 +1,31 @@
-function importarScript(url, integrity, crossorigin, callback) {
-    var script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = url;
-    script.integrity = integrity;
-    script.crossOrigin = crossorigin;
-    document.head.appendChild(script);
-}
+// function importarScript(url, integrity, crossorigin, callback) {
+//     var script = document.createElement('script');
+//     script.type = 'text/javascript';
+//     script.src = url;
+//     script.integrity = integrity;
+//     script.crossOrigin = crossorigin;
+//     document.head.appendChild(script);
+// }
 
-function importarEstilo(url, integrity, crossorigin) {
-    var link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = url;
-    link.integrity = integrity;
-    link.crossOrigin = crossorigin;
-    document.head.appendChild(link);
-}
+// function importarEstilo(url, integrity, crossorigin) {
+//     var link = document.createElement('link');
+//     link.rel = 'stylesheet';
+//     link.href = url;
+//     link.integrity = integrity;
+//     link.crossOrigin = crossorigin;
+//     document.head.appendChild(link);
+// }
 
-importarScript('https://cdn.jsdelivr.net/npm/chart.js', '', '', function() {});
-importarScript('https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js', 'sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL', 'anonymous', function() {});
-importarEstilo('https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css', 'sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN', 'anonymous');
+//importarScript('https://cdn.jsdelivr.net/npm/chart.js', '', '', function() {});
+//importarScript('https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js', 'sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL', 'anonymous', function() {});
+//importarEstilo('https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css', 'sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN', 'anonymous');
+
+require.config({
+    paths: {
+        'chart': 'https://cdn.jsdelivr.net/npm/chart',
+        'bootstrap': 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min'
+    }
+});
 
 var env = {
     urlServiceOrder: 'https://suporte.dgt.com.br/api/v1/integration/service_orders.json',
@@ -33,36 +40,53 @@ var page = {
     pageSize: 30
 }
 var chartCustomers = null;
+var alertType = {
+    PRIMARY: 'primary',
+    DANGER: 'danger',
+    WARNING: 'warning'
+};
+var iconType = {
+    PRIMARY: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="margin-right: 10px; height: 23px;"><path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z"></path></svg>',
+    DANGER: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="margin-right: 10px; height: 23px;"><path d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7 .2 40.1S486.3 480 472 480H40c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8 .2-40.1l216-368C228.7 39.5 241.8 32 256 32zm0 128c-13.3 0-24 10.7-24 24V296c0 13.3 10.7 24 24 24s24-10.7 24-24V184c0-13.3-10.7-24-24-24zm32 224a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></svg>',
+    WARNING: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="margin-right: 10px; height: 23px;"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>'
+};
 
 function init() {
-    setTimeout(function() {
-        searchCustomers();
-    }, 1000);
+    searchCustomers();
 }
 
 function searchCustomers() {
+    showLoading('idSpinnerTable', true);
     let params = [['page', page.currentPage]];
     serviceREST('GET', env.urlPerson, params, env.token)
         .then(data => {
             customersList = data;
             insertCustomersHTML(customersList, true);
             newChart();
+            showLoading('idSpinnerTable', false);
+            createToast('Clientes carregados com sucesso', 'Sucesso', alertType.PRIMARY);
         })
         .catch(error => {
             console.error('Erro:', error);
+            showLoading('idSpinnerTable', false);
         });
 }
 
 //Retorna informações completas do cliente
 function loadCustomerInfo(id) {
+    showLoading('idSpinnerListInfo', true);
     let params = [['id', id]];
     serviceREST('GET', env.urlPerson, params, env.token)
         .then(data => {
             customerInfo = data[0];
             createInfoCustomerHTML();
+            showLoading('idSpinnerListInfo', false);
+            createToast('Informações completas do cliente', 'Informação', alertType.WARNING);
         })
         .catch(error => {
             console.error('Erro:', error);
+            showLoading('idSpinnerListInfo', false);
+            createToast('Não foi possível carregar as informações', 'Atenção', alertType.DANGER);
         });
 }
 
@@ -188,14 +212,14 @@ function createInfoCustomerHTML() {
     if(customerInfo){
         info.innerHTML = `
         <div class="row">
-            <div class="col-6">
+            <div class="col-6 p-0">
             <p><span class="fw-bold">Cidade: </span>${customerInfo.city}</p>
             <p><span class="fw-bold">Estado: </span>${customerInfo.state}</p>
             <p><span class="fw-bold">CNPJ: </span>${customerInfo.cnpj}</p>
             <p><span class="fw-bold">E-mail: </span>${customerInfo.email}</p>
             <p><span class="fw-bold">Telefone: </span>${customerInfo.phone1}</p>
             </div>
-            <div class="col-6">
+            <div class="col-6 p-0">
             <p><span class="fw-bold">Preventiva: </span>${customerInfo.extra_info}</p>
             <p><span class="fw-bold">Observação: </span>${customerInfo.obs}</p>
             <p><span class="fw-bold">Tipo de Cliente: </span>${customerInfo.customer_type}</p>
@@ -208,7 +232,7 @@ function createInfoCustomerHTML() {
     } else {
         info.innerHTML = `
         <div class="row">
-            <p class="text-center">Selecione uma cidade</p>
+            <p class="text-center">Selecione uma cidade na lista</p>
         </div>
         `;
     }
@@ -274,56 +298,47 @@ window.paginator = function(event) {
 
 //chart
 function newChart() {
-    const ctx = document.getElementById('myChart');
+    
+    require(['chart'], function(Chart) {
+        const ctx = document.getElementById('myChart');
+        let [labels, data] = mountDataChart(customersList);
 
-    require.config({
-        paths: {
-            'chart': 'https://cdn.jsdelivr.net/npm/chart.js'
-        }
-    });
-    
-    require(['chart'], function(chart) {
-        define('chart', function() {
-            Chart = chart;
-        });
-    });
-    
-    let [labels, data] = mountDataChart(customersList);
-    if (chartCustomers == null) {
-        chartCustomers = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: false,
-                data: data,
-                backgroundColor: generateGradientColors(labels.length),
-            }],
-            borderWidth: 1,
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
+        if (chartCustomers == null) {
+            chartCustomers = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: false,
+                    data: data,
+                    backgroundColor: generateGradientColors(labels.length),
+                }],
+                borderWidth: 1,
             },
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Projetos por Cliente'
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 },
-                legend: {
-                    display: false
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Projetos por Cliente'
+                    },
+                    legend: {
+                        display: false
+                    }
                 }
             }
-        }
-        });
-    } else {
-        chartCustomers.data.labels = labels;
-        chartCustomers.data.datasets[0].data = data;
-        chartCustomers.data.datasets[0].backgroundColor = generateGradientColors(labels.length);
-        chartCustomers.update();
-    }
+            });
+        } else {
+            chartCustomers.data.labels = labels;
+            chartCustomers.data.datasets[0].data = data;
+            chartCustomers.data.datasets[0].backgroundColor = generateGradientColors(labels.length);
+            chartCustomers.update();
+        }}
+    );
 };
 
 function mountDataChart(customers) {
@@ -357,7 +372,79 @@ function generateGradientColors(totalColors) {
     }
   
     return colors;
-  }
+}
+
+function showLoading(divId, show) {
+    const div = document.getElementById(divId);
+    if (div)
+        show ? div.style.display = '' : div.style.display = 'none';
+}
+
+function createToast(message, title, classType) {
+    require(['bootstrap'], function(bootstrap) {
+        const toastContainer = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+
+        toast.classList.add('toast', `text-bg-${classType}`, 'fs-4');
+        toast.style.minWidth = '550px';
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('aria-live', 'assertive');
+        toast.setAttribute('aria-atomic', 'true');
+        toast.setAttribute('data-bs-autohide', 'false');
+
+        toast.innerHTML = `
+            <div class="toast-header">
+                ${iconType[classType.toUpperCase()]}
+                <strong class="me-auto">${title}</strong>
+                <small class="text-body-secondary" id="idToastShow${toastContainer.childElementCount}">Agora mesmo</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                ${message}
+            </div>
+        `;
+
+        toastContainer.appendChild(toast);
+        const bootstrapToast = new bootstrap.Toast(toast);
+        bootstrapToast.show();
+        toast.addEventListener('hidden.bs.toast', () => {
+            toast.remove();
+        });
+        createToastTimeMsg(`idToastShow${toastContainer.childElementCount - 1}`);
+
+        const alertSound = document.getElementById('alertSound');
+        alertSound.play();
+    });
+}
+
+function createToastTimeMsg(idHTML) {
+    let contador = 0;
+    let intervalo = setInterval(() => {
+        contador++;
+        updateTimeToast(contador, idHTML, intervalo);
+    }, 60000);
+}
+
+function updateTimeToast(cont, id, interval) {
+    const elemento = document.getElementById(id);
+    if (!elemento) {
+        clearInterval(interval);
+        return;
+    }
+    
+    if (cont < 1) 
+        elemento.innerText = 'Agora mesmo';
+    else if (cont == 1)
+        elemento.innerText = 'Há 1 minuto';
+    else if (cont <= 5) 
+        elemento.innerText = `Há ${cont} minutos`;
+    else {
+        elemento.innerText = 'Há mais de 5 minutos';
+        clearInterval(interval);
+    }
+}
+
+
 
 window.onload = function() {
     init();
