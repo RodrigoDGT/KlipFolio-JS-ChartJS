@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang='pt-br'>
+<head>
+  <meta charset='UTF-8'>
+  
+  <link  rel="stylesheet" href="../bootstrap/css/bootstrap.css">
+  <script src="../bootstrap/js/bootstrap.bundle.js"></script>
+
+    <!-- <link href="customCSS.css" rel="stylesheet"> -->
+</head>
+<body>
+  {{if Ponto.length === 0}}
+  <table style="border-collapse: collapse; width: 100%;">
+    <tr>
+      <td style="border: 1px solid black; padding: 5px; background-color: #202a44; color: #05c3dd; text-align: center;" colspan="{{Series2.length + 1}}">TODAS ESTAO REGISTRANDO PASSAGEM</td>
+    </tr>
+  </table>
+  {{else}}
+  <div class="container-fluid">
+    <div class="row">
+      {{each Ponto}}
+      <ul class="list-group col-2 p-1">
+        <li class="list-group-item h-100 p-0">
+          <div class="row justify-content-between m-0 p-1 row" style="background-color: #1E334D;color: #05C3DD; border-radius: 5px 5px 0px 0px;">
+            <p class="col-auto p-0 m-0 fw-bold">Ponto: <span class="">${$value}</span></p>
+            <p class="col-auto p-0 m-0 fw-bold">Câmera: <span class="">${Camera[$index]}</span></p>
+          </div>
+          <div class="p-1">
+            <p class="col-auto p-0 m-0 fw-bold">Endereço: <span class="fw-light">${Endereco[$index]}</span></p>
+            <p class="col-auto p-0 m-0 fw-bold">Último Envio: <span class="fw-light">${Tempo[$index]}</span></p>
+          </div>
+        </li>
+      </ul>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+
+  <table id="tabela-centralizada" style="border-collapse: collapse; width: 100%;">
+    {{if Series1.length === 0}}
+    <tr>
+      <td style="border: 1px solid black; padding: 5px; background-color: #202a44; color: #05c3dd; text-align: center;" colspan="{{Series2.length + 1}}">TODAS ESTAO REGISTRANDO PASSAGEM</td>
+    </tr>
+    {{else}}
+    <div class="row">
+      <div class="col-1 p-0">
+          <div class="card text-center textBlue">
+              <div class="card-header" style="background-color: #202A44">Ponto</div>
+              <div class="card-body p-2 bg-danger" >
+                  <p class="card-title">Câmera</p>
+              </div>
+          </div>
+      </div>
+      {{each Series1}}
+      <div class="col-1 p-0">
+          <div class="card text-center">
+              <div class="card-header textBlue" style="background-color: #202A44">
+                  ${$value}
+              </div>
+              <div class="card-body p-2 bg-danger" style="height: 27px;">
+                  <h5 class="card-title textBlue">${Series2[$index]}</h5>
+              </div>
+          </div>
+      </div>
+      {{/each}}
+  </div>
+  
+    {{/if}}
+  </table>
+
+
+
+
+  <!-- <div class="row">
+      <div class="col-1 p-0">
+          <div class="card text-center textBlue">
+              <div class="card-header" style="background-color: #202A44">Ponto</div>
+              <div class="card-body p-2 bg-danger" >
+                  <p class="card-title">Câmera</p>
+              </div>
+          </div>
+      </div>
+      {{each Series1}}
+      <div class="col-1 p-0">
+          <div class="card text-center">
+              <div class="card-header textBlue" style="background-color: #202A44">
+                  ${$value}
+              </div>
+              {{if Series3[$index] == "Sim"}}
+                <div class="card-body p-2" style="height: 27px; background-color: #127A94; color: #202A44;">
+                    <h5 class="card-title">${Series2[$index]}</h5>
+                </div>
+              {{else}}
+              <div class="card-body p-2 bg-danger" style="height: 27px;">
+                <h5 class="card-title textBlue">${Series2[$index]}</h5>
+              </div>
+              {{/if}}
+          </div>
+      </div>
+      {{/each}}
+  </div> -->
+
+</body>
+        
+
+
+<!-- <div class="col-1">
+    <div class="card text-center col-9">
+        <div class="card-header bg-danger textBlue">
+            item1
+        </div>
+        <div class="card-body p-2" style="background-color: #202A44">
+            <h5 class="card-title textBlue">item2</h5>
+        </div>
+    </div>                    
+</div>
+
+<div class="row">
+    <div class="col-auto pe-0">
+        <div class="card text-center textBlue h-100">
+            <div class="card-header" style="background-color: #202A44">Ponto</div>
+            <div class="card-body p-2 bg-danger" >
+                <p class="card-title m-0">Câmera</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-auto px-0">
+        <div class="card text-center h-100">
+            <div class="card-header textBlue" style="background-color: #202A44">
+              Ponto 01
+            </div>
+            <div class="card-body p-2 bg-danger" style="max-width: 270px;">
+                <p class="card-title m-0 textBlue fw-medium text-wrap">Camera rua tal de tal rua tal de tal rua tal de tal rua tal de tal </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-auto px-0">
+      <div class="card text-center h-100">
+          <div class="card-header textBlue" style="background-color: #202A44">
+            Ponto 01
+          </div>
+          <div class="card-body p-2 bg-danger" style="max-width: 270px;">
+              <p class="card-title m-0 textBlue fw-medium text-wrap">Camera rua tal de tal </p>
+          </div>
+      </div>
+  </div>
+    
+</div> -->
+
+
+
+
+<!-- <style>
+    /* Centralize a tabela com o ID "tabela-centralizada" horizontalmente */
+    #tabela-centralizada {
+      margin: 0 auto;
+    }
+  
+    /* Centralize o texto nas células da tabela com o ID "tabela-centralizada" */
+    #tabela-centralizada td {
+      text-align: center;
+    }
+    .textBlue {
+        color: #05c3dd;
+    }
+
+    .fundoRedBlue {
+        background: linear-gradient(0deg, rgba(220,53,69,1) 0%, rgba(32,43,69,1) 65%);
+    }
+</style> -->
+  
+  
+<!--   
+  <table id="tabela-centralizada" style="border-collapse: collapse; width: 100%;">
+    {{if Series1.length === 0}}
+    <tr>
+      <td style="border: 1px solid black; padding: 5px; background-color: #202a44; color: #05c3dd; text-align: center;" colspan="{{Series2.length + 1}}">TODAS ESTAO REGISTRANDO PASSAGEM</td>
+    </tr>
+    {{else}}
+    <tr>
+      <td style="border: 1px solid black; padding: 5px; background-color: #202a44; color: #05c3dd;">PONTO</td>
+      {{each Series1}}
+      <td style="border: 1px solid black; padding: 5px; color: #05c3dd;background-color:#202a44">${$value}</td>
+      {{/each}}
+    </tr>
+    <tr>
+      <td style="border: 1px solid black; padding: 5px; background-color: #202a44; color: #05c3dd;">CAMERA</td>
+      {{each Series2}}
+      <td style="border: 1px solid black; padding: 5px; background-color: ${Series3[$index] === 'Sim' ? '#b6e57c' : '#FE2E2E'}; color: #202a44;">${$value}</td>
+      {{/each}}
+    </tr>
+    <tr>
+      <td style="border: 1px solid black; padding: 5px; background-color: #202a44; color: #05c3dd;">CAPTURANDO</td>
+      {{each Series3}}
+      <td style="border: 1px solid black; padding: 5px; background-color: ${$value === 'Sim' ? '#b6e57c' : '#FE2E2E'}; color: #202a44;">${$value}</td>
+      {{/each}}
+    </tr>
+    {{/if}}
+  </table>
+   -->
+
+
+    <!-- <table id="tabela-centralizada" style="border-collapse: collapse; width: 100%;">
+      {{if Series1.length === 0}}
+      <tr>
+        <td style="border: 1px solid black; padding: 5px; background-color: #202a44; color: #05c3dd; text-align: center;" colspan="{{Series2.length + 1}}">TODAS ESTAO REGISTRANDO PASSAGEM</td>
+      </tr>
+      {{else}}
+      <div class="row">
+        <div class="col-1 p-0">
+            <div class="card text-center textBlue">
+                <div class="card-header" style="background-color: #202A44">Ponto</div>
+                <div class="card-body p-2 bg-danger" >
+                    <p class="card-title">Câmera</p>
+                </div>
+            </div>
+        </div>
+        {{each Series1}}
+        <div class="col-1 p-0">
+            <div class="card text-center">
+                <div class="card-header textBlue" style="background-color: #202A44">
+                    ${$value}
+                </div>
+                <div class="card-body p-2 bg-danger" style="height: 27px;">
+                    <h5 class="card-title textBlue">${Series2[$index]}</h5>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+    
+      {{/if}}
+    </table> -->
+    

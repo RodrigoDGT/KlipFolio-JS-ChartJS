@@ -1,0 +1,1 @@
+CONCAT(SUBSTITUTE(RIGHT(SLICE(ea2eb18eadee82fdb6e831c7a55ab5e4@B:B;),2),".",""), " ",LEFT(SLICE(ea2eb18eadee82fdb6e831c7a55ab5e4@D:D;),20), " - ",SLICE(ea2eb18eadee82fdb6e831c7a55ab5e4@E:E;))
