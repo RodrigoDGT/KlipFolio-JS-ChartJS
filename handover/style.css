@@ -213,7 +213,9 @@
   ::-webkit-inner-spin-button {
     height: auto;
   }
-  
+  .fw-bold {
+    font-weight: 700 !important;
+  }
   /* rtl:raw:
   [type="tel"],
   [type="url"],
