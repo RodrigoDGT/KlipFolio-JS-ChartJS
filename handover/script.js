@@ -1,9 +1,13 @@
 var env = {
     klipFolio: {
-        idCalendarStart: 'f9a931be-33',
-        idCalendarEnd: '0d09e944-42',
-        idBtnCalendar: '18740ca0-39',
-        idClientSelect: 'c099f419-19'
+        idklip: '2c646bea7a33fc98c368ac7f533cbc3b',
+        idCalendarStart: '2140931a4ae021a8440fff8881b485c3c82bd623',
+        idCalendarEnd: '21417a3ce5c3b924142458fd67b66861335dc935',
+        idBtnCalendar: '2b05c6eccf071d8e349497c1cc901c5f1c42c4a3',
+        idClientSelect: '64482cacbcae1faa77278dcaf09cdad1fcd79f3c',
+        dataInicial: 'data_ha_ini',
+        dataFinal: 'data_ha_fin',
+        variavelCliente: 'data_ha_cliente',
     },
     bootstrap: {
         idFormCalendar: 'idFormCalendar1',
@@ -29,11 +33,16 @@ var dateTime = {
     formatDate: function(dateString) {
         let date = new Date(dateString)
         return date.toLocaleDateString('pt-BR', this.options).split('/').reverse().join('-');
+    },
+    formatDateKlip: function(dateString) {
+        let dateParts = dateString.split('-');
+        let date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+        return date.toLocaleDateString('pt-BR', this.options);
     }
 }
 
 function init() {
-    setStartAndEndDates();
+    callFunc(setStartAndEndDates);
     callFunc(replicateAndSyncSelects);
 }
 
@@ -44,8 +53,9 @@ function search() {
 
     changeDateKlipCalendar(env.bootstrap.idCalendarStart);
     changeDateKlipCalendar(env.bootstrap.idCalendarEnd);
-
+    dashboard
     btnBlockRequest();
+    callFunc(replicateAndSyncSelects);
     return false;
 }
 window.search = search;
@@ -63,21 +73,21 @@ function btnBlockRequest() {
         return;
     btnKlip.click();
     
-    btnBoots.disabled = true;
-    btnBoots.style.cursor = 'wait';
-    btnBoots.innerHTML = `Aguarde ${counter}s`;
+    // btnBoots.disabled = true;
+    // btnBoots.style.cursor = 'wait';
+    // btnBoots.innerHTML = `Aguarde ${counter}s`;
 
-    var countdown = setInterval(function() {
-        counter--;
-        if (counter <= 0) {
-            clearInterval(countdown);
-            btnBoots.disabled = false;
-            btnBoots.style.cursor = 'pointer';
-            btnBoots.innerHTML = 'Pesquisar';
-        } else {
-            btnBoots.innerHTML = `Aguarde ${counter}s`;
-        }
-    }, 1000);
+    // var countdown = setInterval(function() {
+    //     counter--;
+    //     if (counter <= 0) {
+    //         clearInterval(countdown);
+    //         btnBoots.disabled = false;
+    //         btnBoots.style.cursor = 'pointer';
+    //         btnBoots.innerHTML = 'Pesquisar';
+    //     } else {
+    //         btnBoots.innerHTML = `Aguarde ${counter}s`;
+    //     }
+    // }, 1000);
 }
 
 function setStartAndEndDates() {
@@ -98,26 +108,34 @@ function setStartAndEndDates() {
 }
 
 function changeDateKlipCalendar(id) {
-    let idKlip = '';
+    //let idKlip = '';
+    let variableKlip = '';
 
-    if ( id == env.bootstrap.idCalendarStart)
-        idKlip = env.klipFolio.idCalendarStart;
-    else
-        idKlip = env.klipFolio.idCalendarEnd;
+    if ( id == env.bootstrap.idCalendarStart){
+        //idKlip = env.klipFolio.idCalendarStart;
+        variableKlip = env.klipFolio.dataInicial;
+    }
+    else {
+        //idKlip = env.klipFolio.idCalendarEnd;
+        variableKlip = env.klipFolio.dataFinal;
+    }
 
     let bootsInput = document.getElementById(id);
-    let klip = document.getElementById(idKlip);
-
-    if (!klip || !bootsInput)
+    if (!bootsInput)
         return;
-    
-    
-    klip = klip.querySelector('input');
-    
-    if (!klip)
-    return;
+    //let klip = document.getElementById(idKlip);
 
-    klip.value = bootsInput.value;
+    //if (!klip || !bootsInput)
+    //    return;
+    
+    
+    //klip = klip.querySelector('input');
+    
+    //if (!klip)
+    //return;
+
+    setValueKlipVariable(variableKlip, dateTime.formatDateKlip(bootsInput.value));
+    //console.log('variavel após SET',dashboard.dashboardProps.find(x => x.name == env.klipFolio.dataInicial));
     checkDateStartDateEnd();
 }
 window.changeDateKlipCalendar = changeDateKlipCalendar;
@@ -173,24 +191,31 @@ function replicateAndSyncSelects() {
     // Replicar options
     for (let i = 0; i < sourceSelect.options.length; i++) {
         let option = document.createElement('option');
-        option.value = sourceSelect.options[i].value;
+        option.value = [i];
         option.text = sourceSelect.options[i].text;
         targetSelect.add(option);
     }
-  
+    if(targetSelect.options[0])
+        targetSelect.options[0].selected = true;
+
     // Sincronizar selects
     targetSelect.addEventListener('change', function() {
-        sourceSelect.value = this.value;
+        //sourceSelect.value = this.value;
+        setValueKlipVariable(env.klipFolio.variavelCliente, this.options[this.value].innerText);
     });
 }
+window.replicateAndSyncSelects = replicateAndSyncSelects;
 
 function callFunc(func) {
     var interval = setInterval(func, 1000);
     setTimeout(function() {
         clearInterval(interval);
-    }, 50000);
+    }, 5000);
 }
 
+function setValueKlipVariable(variable, value) {
+    dashboard.setDashboardProp(3, variable, value, env.klipFolio.idklip);
+}
 
 init();
 
