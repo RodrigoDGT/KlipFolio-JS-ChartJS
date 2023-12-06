@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultima passagem cameras</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="setCheckDate()">
+    <table style="border-collapse: collapse; width: 100%;">
+    </table>
+    <div class="container-fluid">
+      <div class="row justify-content-center">
+        {{each Camera}}
+            <ul class="list-group p-1" style="width: 180px;">
+                <li class="list-group-item h-100 p-0">
+                    <div class="row justify-content-between m-0 p-1 row" style="background-color: #1E334D;color: #05C3DD; border-radius: 5px 5px 0px 0px;">
+                    <p class="col-auto p-0 m-0 fw-bold">Câmera: <span class="">${$value}</span></p>
+                    </div>
+                    <div class="p-1 div-container">
+                <div>
+                    <p class="col-auto p-0 m-0 " style="text-align: center;">${Cidade[$index]}</p>
+                    <p class="col-auto p-0 m-0 fw-bold">End: <span class="fw-light">${Endereco[$index]}</span></p>
+                    <p class="col-auto p-0 m-0 fw-bold">Placa: <span class="fw-light">${Placa[$index]}</span></p>
+                    <p class="col-auto p-0 m-0 fw-bold">Data: <span class="fw-light classSpan">${Hora[$index]}</span></p>
+                </div>
+                    <img class="table-col-img constrained-size" src="${URL[$index]}" alt="imagem camera" style="max-width: 400px; border-radius: 6px;" >
+                    </div>
+                </li>
+            </ul>
+        {{/each}}
+      </div>
+    </div>
+</body>
+</html>
